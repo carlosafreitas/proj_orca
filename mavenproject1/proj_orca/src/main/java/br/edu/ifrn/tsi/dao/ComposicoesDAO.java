@@ -9,14 +9,17 @@ import br.edu.ifrn.tsi.domain.Composicoes;
 import br.edu.ifrn.tsi.factory.ConexaoFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
  * @author carlos
  */
 public class ComposicoesDAO {
-    public void salvar(Composicoes composicoes) throws SQLException{
+    
+    public void salvarComposicoes(Composicoes composicoes) throws SQLException{
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO Composicoes ");
         sql.append("private int id;\n" +
@@ -37,6 +40,8 @@ public class ComposicoesDAO {
 "    private float custo_outros;\n" +
 "    private float outros; ");
         
+        
+        //TODO Completar o DAO com o conteudo da tabela "Composicoes e testar o metodo 
         Connection conexao = ConexaoFactory.conectar();
         
         PreparedStatement comando = conexao.prepareStatement(sql.toString());
@@ -45,4 +50,114 @@ public class ComposicoesDAO {
         comando.executeUpdate();
         
     }
+    
+    public void excluirComposicoes(Composicoes composicoes) throws SQLException{
+        StringBuilder sql = new  StringBuilder();
+        sql.append("DELETE FROM Composicoes ");
+        sql.append("WHERE  id = ? ");
+        
+        Connection conexao = ConexaoFactory.conectar();
+        
+        PreparedStatement comando = conexao.prepareStatement(sql.toString());
+        comando.setInt(1, composicoes.getId());
+        
+        comando.executeUpdate();
+        
+    }
+    
+    public void editarComposicoes(Composicoes composicoes) throws SQLException{
+        StringBuilder sql = new  StringBuilder();
+        sql.append("UPDATE Composicoes ");
+        sql.append("SET descricao = ? ");
+        //
+        //
+        //
+        sql.append("WHERE  id = ? ");
+        
+        Connection conexao = ConexaoFactory.conectar();
+        
+        PreparedStatement comando = conexao.prepareStatement(sql.toString());
+        comando.setInt(1, composicoes.getId());
+        comando.setInt(1, composicoes.getAgrupador());
+        
+        comando.executeUpdate();
+    }
+    
+    public Composicoes pesquisarComposicoesPorId(Composicoes composicoes) throws SQLException {
+        StringBuilder sql = new  StringBuilder();
+        sql.append("SELECT descricao_agrupador, codigo_composicao ");
+        sql.append("FROM Composicoes ");
+        sql.append("WHERE id = ? ");
+        
+        Connection conexao = ConexaoFactory.conectar();
+        
+        PreparedStatement comando = conexao.prepareStatement(sql.toString());
+        comando.setInt(1, composicoes.getId());
+        
+        
+        ResultSet resultado = comando.executeQuery();
+        
+        Composicoes retorno = null;
+        
+        if (resultado.next()){
+            retorno = new Composicoes();
+            retorno.setId(resultado.getInt("id"));
+            retorno.setCodigo_composicao(resultado.getString("codigo_composicao"));
+        }
+        return retorno;
+    }
+    
+    
+    public ArrayList<Composicoes> listarTodasComposicoes(Composicoes composicoes) throws SQLException {
+        StringBuilder sql = new  StringBuilder();
+        sql.append("SELECT descricao_agrupador, codigo_composicao ");
+        sql.append("FROM Composicoes ");
+        sql.append("ORDER BY descricao_agrupador ASC ");
+        
+        Connection conexao = ConexaoFactory.conectar();
+        
+        PreparedStatement comando = conexao.prepareStatement(sql.toString());
+        
+        // TODO  consertar o campo de pesquisa 
+        comando.setString(1, "%" + composicoes.getAgrupador() + "%" );
+        
+        ResultSet resultado = comando.executeQuery();
+        
+        ArrayList<Composicoes> lista = new ArrayList<Composicoes>();
+        
+        while (resultado.next()){
+            Composicoes item = new Composicoes();
+            item.setId(resultado.getInt("id"));
+            item.setCodigo_composicao(resultado.getString("codigo_composicao"));
+            
+            lista.add(item);
+        }
+        return lista;
+    }
+    
+    public ArrayList<Composicoes> listarComposicoesDescricao() throws SQLException {
+        StringBuilder sql = new  StringBuilder();
+        sql.append("SELECT descricao_agrupador, codigo_composicao ");
+        sql.append("FROM Composicoes ");
+        sql.append("WHERE Composicoes LIKE ? ");
+        sql.append("ORDER BY descricao_agrupador ASC ");
+        
+        Connection conexao = ConexaoFactory.conectar();
+        
+        PreparedStatement comando = conexao.prepareStatement(sql.toString());
+        
+        ResultSet resultado = comando.executeQuery();
+        
+        ArrayList<Composicoes> lista = new ArrayList<Composicoes>();
+        
+        while (resultado.next()){
+            Composicoes retorno = new Composicoes();
+            retorno.setId(resultado.getInt("id"));
+            retorno.setCodigo_composicao(resultado.getString("codigo_composicao"));
+            
+            lista.add(retorno);
+        }
+        return lista;
+    }
+    
 }
