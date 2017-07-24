@@ -12,11 +12,14 @@ and open the template in the editor.
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
+        <title>Orçamento de Obras</title>
+        <h:outputStylesheet name="estilos.css" library="css" />
+    </h:head>
+    <h:body>
         <p:layout fullPage="true">
-            <p:layoutUnit position="north">      
-                <ui:define name="menu">
-                    <ui:include src="menu.xhtml" />
-                </ui:define>
+            <p:layoutUnit position="north">     
+                
+                
                 <h:form>
                     <p:menubar>
                         <p:submenu label="Arquivo">
@@ -45,9 +48,5 @@ and open the template in the editor.
                 <ui:insert name="conteudo" />
             </p:layoutUnit>
         </p:layout>
-
-    </h:head>
-    <h:body>
-        <div>TODO write content</div>
     </h:body>
 </html>
